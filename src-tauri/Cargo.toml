@@ -1,0 +1,79 @@
+[workspace]
+members = ["core"]
+resolver = "3"
+
+[package]
+name = "parts-order-manager"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.89"
+publish = false
+license = "UNLICENSED"
+description = "発注書管理（Tauri / WebView2）"
+default-run = "parts-order-manager"
+
+[lib]
+name = "parts_order_manager_lib"
+path = "src/lib.rs"
+
+[[bin]]
+name = "parts-order-manager"
+path = "src/main.rs"
+
+# E2Eテスト用（Linux など WebView2 のない環境で、画面を Chromium から操作するための中継）。配布物には含めない。
+[[bin]]
+name = "pom-bridge"
+path = "src/bin/pom-bridge.rs"
+required-features = ["e2e"]
+
+[features]
+# E2Eテスト専用の操作口（ダイアログの代役・障害の注入）。配布物には含めない。
+e2e = []
+
+[build-dependencies]
+tauri-build = { version = "=2.7.2", features = [] }
+
+[dependencies]
+pom-core = { path = "core" }
+tauri = { version = "=2.12.1", features = [] }
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+tokio = { version = "1", features = ["sync", "time"] }
+base64 = "0.22"
+raw-window-handle = "0.6"
+rfd = { version = "=0.17.2", default-features = false, features = ["gtk3"] }
+
+[target.'cfg(windows)'.dependencies]
+webview2-com = "=0.39.1"
+windows-core = "0.62"
+windows = { version = "=0.62.2", features = [
+  "Win32_Foundation",
+  "Win32_Graphics_Gdi",
+  "Win32_Security",
+  "Win32_System_Com",
+  "Win32_System_LibraryLoader",
+  "Win32_System_Memory",
+  "Win32_System_Threading",
+  "Win32_UI_Controls",
+  "Win32_UI_Controls_Dialogs",
+  "Win32_UI_Shell",
+  "Win32_UI_WindowsAndMessaging",
+] }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+webkit2gtk = { version = "=2.0.2", features = ["v2_40"] }
+gtk = "0.18"
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
+
+# E2Eテスト用のビルド（pnpm build:e2e。出力は target/e2e/）。配布用より最適化を軽くしてビルド時間を短くする。
+[profile.e2e]
+inherits = "release"
+lto = false
+codegen-units = 16
+opt-level = 1

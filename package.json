@@ -1,0 +1,59 @@
+{
+  "name": "parts-order-manager",
+  "productName": "発注書管理",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Windows向け材料検索・帳票管理アプリ（Tauri / WebView2）",
+  "author": "発注書管理プロジェクト",
+  "license": "UNLICENSED",
+  "packageManager": "pnpm@10.34.5",
+  "engines": {
+    "node": "^24.19.0"
+  },
+  "scripts": {
+    "dev": "node tools/check-node.mjs && tauri dev",
+    "dev:web": "vite",
+    "build:web": "vite build",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "node tools/check-node.mjs && vitest run && cargo test --manifest-path src-tauri/Cargo.toml --workspace",
+    "test:web": "vitest run",
+    "test:rust": "cargo test --manifest-path src-tauri/Cargo.toml --workspace",
+    "build": "node tools/check-node.mjs && tauri build --no-bundle",
+    "make": "node tools/check-node.mjs && tauri build --no-bundle && node tools/make-installer.mjs",
+    "build:e2e": "node tools/check-node.mjs && vite build && cargo build --manifest-path src-tauri/Cargo.toml --profile e2e --features e2e,tauri/custom-protocol",
+    "test:e2e": "node tools/check-node.mjs && playwright test",
+    "test:tauri": "node tools/check-node.mjs && vitest run --config vitest.tauri.config.mjs",
+    "test:differential": "node tools/check-node.mjs && node tools/differential.mjs",
+    "test:office": "node tools/check-node.mjs && cargo build --manifest-path src-tauri/Cargo.toml -p pom-core --example harness --features sequential-ids && vitest run --config vitest.office.config.mjs",
+    "icons": "node assets/icon/make-icon.mjs assets/icon artifacts/icon-preview.png",
+    "notices": "node tools/notices.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.63.0",
+    "@tailwindcss/vite": "4.3.3",
+    "@tauri-apps/cli": "2.12.1",
+    "@types/node": "24.13.3",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.7",
+    "@vitejs/plugin-react": "5.2.0",
+    "eslint": "10.10.0",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "tailwindcss": "4.3.3",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.70.0",
+    "vite": "7.3.6",
+    "vitest": "4.1.11"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  },
+  "dependencies": {
+    "@tauri-apps/api": "2.12.1"
+  }
+}

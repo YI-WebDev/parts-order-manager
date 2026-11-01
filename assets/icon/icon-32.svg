@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- 24〜40px用。細部を省き、32pxの画素に合わせて描く。 -->
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#30665a"/>
+      <stop offset="1" stop-color="#1d4139"/>
+    </linearGradient>
+  </defs>
+  <rect x="1" y="1" width="30" height="30" rx="7" fill="url(#tile)"/>
+  <path d="M9.5 5H19L24 10V25.5A1.5 1.5 0 0 1 22.5 27H9.5A1.5 1.5 0 0 1 8 25.5V6.5A1.5 1.5 0 0 1 9.5 5Z" fill="#fff"/>
+  <path d="M19 5V10H24Z" fill="#cfe0d2"/>
+  <g fill="#254f46">
+    <rect x="10" y="12" width="2" height="2"/><rect x="14" y="12" width="7" height="2"/>
+    <rect x="10" y="17" width="2" height="2"/><rect x="14" y="17" width="6" height="2"/>
+    <rect x="10" y="22" width="2" height="2"/><rect x="14" y="22" width="7" height="2"/>
+  </g>
+</svg>

@@ -1,0 +1,28 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+  "productName": "発注書管理",
+  "mainBinaryName": "parts-order-manager",
+  "version": "../package.json",
+  "identifier": "PartsOrderManager.App",
+  "build": {
+    "beforeDevCommand": "pnpm run dev:web",
+    "devUrl": "http://127.0.0.1:5173",
+    "beforeBuildCommand": "pnpm run build:web",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [],
+    "withGlobalTauri": false,
+    "security": {
+      "csp": "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src ipc: http://ipc.localhost; frame-src 'none'; frame-ancestors 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; worker-src 'none'",
+      "freezePrototype": false,
+      "headers": { "X-Content-Type-Options": "nosniff" }
+    }
+  },
+  "bundle": {
+    "active": false,
+    "publisher": "発注書管理プロジェクト",
+    "copyright": "発注書管理プロジェクト",
+    "icon": ["icons/32x32.png", "icons/128x128.png", "icons/icon.ico"]
+  }
+}

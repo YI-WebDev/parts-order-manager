@@ -1,0 +1,40 @@
+[package]
+name = "pom-core"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.89"
+publish = false
+license = "UNLICENSED"
+description = "発注書管理の業務処理（DB・Excel取込・Excel出力・印刷HTML・バックアップ）。画面やOSに依存しない。"
+
+[lib]
+path = "src/lib.rs"
+
+[features]
+# 差分テストの harness だけで使う（識別子を連番にする）。製品には含めない。
+sequential-ids = []
+
+[[example]]
+name = "harness"
+required-features = ["sequential-ids"]
+
+[dependencies]
+rusqlite = { version = "0.40", features = ["bundled", "backup", "functions"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+indexmap = { version = "2", features = ["serde"] }
+sha2 = "0.10"
+hex = "0.4"
+base64 = "0.22"
+uuid = { version = "1", features = ["v4"] }
+unicode-normalization = "0.1"
+miniz_oxide = { version = "0.8", features = ["std"] }
+crc32fast = "1"
+regex = "1"
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.61", features = ["Win32_Foundation", "Win32_Storage_FileSystem", "Win32_Security"] }
+
+[dev-dependencies]
+tempfile = "3"

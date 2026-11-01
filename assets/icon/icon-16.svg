@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16">
+  <!-- 16〜20px用。1画素単位の簡略版。 -->
+  <rect x="0" y="0" width="16" height="16" rx="3.5" fill="#254f46"/>
+  <rect x="4" y="2" width="8" height="12" rx="1" fill="#fff"/>
+  <g fill="#254f46">
+    <rect x="5" y="5" width="1" height="1"/><rect x="7" y="5" width="4" height="1"/>
+    <rect x="5" y="8" width="1" height="1"/><rect x="7" y="8" width="3" height="1"/>
+    <rect x="5" y="11" width="1" height="1"/><rect x="7" y="11" width="4" height="1"/>
+  </g>
+</svg>
