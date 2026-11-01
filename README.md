@@ -1,10 +1,10 @@
 <div align="center">
 
-<img src="assets/icon/icon-512.png" alt="発注書管理" width="112" />
+<img src="assets/icon/icon-512.png" alt="" width="112" />
 
 # 発注書管理
 
-**材料を探して、請求書の明細へ。**
+**材料を探して、請求書の明細へ。**<br />
 材料Excelの取込から請求書の作成・出力までを、端末の中だけで行う Windows 向けデスクトップアプリ。
 
 <p>
@@ -47,7 +47,7 @@
 
 ## 概要
 
-**発注書管理** は、材料を検索して請求書の明細を作成・保存する、Windows向けのローカルデスクトップアプリです。
+**発注書管理**は、材料を検索して請求書の明細を作成・保存する、Windows向けのローカルデスクトップアプリです。
 これまでExcelで行っていた「材料を探して請求書へコピーする」作業を置き換えます。
 
 > [!IMPORTANT]
@@ -62,7 +62,7 @@
 | --- | --- |
 | **材料取込** | 材料Excelを解析し、内容を確認してから登録。変更したExcelでの更新取込にも対応（元Excelは変更しません） |
 | **材料検索** | 品名・型式・メーカー・備考の部分一致検索と、カテゴリでの絞り込み |
-| **請求書編集** | 材料検索（Ctrl+F）から選んだ材料をまとめて明細に追加。出力されるExcelと同じ見た目のプレビューで入力し、自動保存 |
+| **請求書編集** | 材料検索（Ctrl+F）から選んだ材料をまとめて明細に追加。明細表での入力を、出力されるExcelと同じ見た目のプレビューに同時に表示（帳票上部はプレビューへ直接入力）。自動保存 |
 | **セルの書式** | Excelの［ホーム］タブと同じ要領で、揃え・太字・フォントサイズ・色などをセルごとに設定 |
 | **出力** | 見本帳票と同じ形のExcel出力と、A4縦1ページのPDF保存・印刷 |
 | **材料管理** | 手動での追加・編集・削除と、変更Excelの差分確認付き再取込 |
@@ -142,7 +142,7 @@ flowchart LR
 ```
 
 1. **材料を取り込む** — 材料Excelを読み込み、内容を確認して材料台帳に登録します。
-2. **明細を作る** — 請求書で材料検索（Ctrl+F）を開き、材料を選んでまとめて明細に追加します。
+2. **明細を作る** — 請求書一覧の「新規請求書」（Ctrl+N）で請求書を開き、材料検索（Ctrl+F）で材料を選んでまとめて明細に追加します。必要なら明細表で数量・備考を直します。
 3. **帳票を仕上げる** — プレビューのセルに帳票上部（上部欄・ヘッダー欄・納期）を入力し、必要に応じて明細のチェック（● ○ ⦿）やセルの書式を付けます。編集内容は自動保存されます。
 4. **出力する** — Excel出力、PDF保存、印刷から選びます。
 
@@ -204,7 +204,7 @@ $pnpmDir = Join-Path $env:LOCALAPPDATA 'PartsOrderDev\pnpm-10.34.5'
 & "$nodeDir\node.exe" "$nodeDir\node_modules\npm\bin\npm-cli.js" install --prefix $pnpmDir --ignore-scripts --no-audit --no-fund pnpm@10.34.5
 ```
 
-3. 以降は次を貼り付けて実行します。`$task` を下表のコマンド名に変えると、他の操作も同じ方法で実行できます。PATHの変更はこの処理中だけで、終了時に元へ戻ります。
+3. 以降は次を貼り付けて実行します。`$task` を下の[コマンド](#コマンド)の表のコマンド名に変えると、他の操作も同じ方法で実行できます。PATHの変更はこの処理中だけで、終了時に元へ戻ります。
 
 ```powershell
 $nodeDir = Join-Path $env:LOCALAPPDATA 'PartsOrderDev\node-v24.19.0-win-x64'
@@ -241,6 +241,20 @@ try {
 | `pnpm test:differential` | 移行前の TypeScript 実装と Rust 実装に同じ操作・乱数で作った入力を与え、結果を突き合わせる |
 | `pnpm test:office` | 実際のLibreOffice・Excelで、出力した請求書の表示・印刷と、保存し直した材料表の取込を確認（入っているアプリだけ。ExcelはWindowsのみ） |
 
+> [!WARNING]
+> E2E 用の実行ファイルにはテスト用の操作口（ダイアログの代役・障害の注入）が入っているため、配布しないでください（`pnpm build`・`pnpm make` の実行ファイルには入りません）。
+
+<details>
+<summary><b>テストの補足（環境変数・E2E の仕組み）</b></summary>
+
+- テストは架空データだけを使います。E2Eテストの証跡の出力先は、環境変数 `POM_E2E_EVIDENCE` で指定できます。
+- `pnpm test:office`・`pnpm test:tauri` は、必要なアプリ・環境がないと該当の確認を飛ばします。環境変数 `POM_REQUIRE_OFFICE=1`（LibreOffice。Windows では Excel も）・`POM_REQUIRE_TAURI=1`（Linux・DISPLAY・ビルド済みアプリ・WebKitWebDriver）を付けると、飛ばさず失敗にします。
+- `tests/unit/sheet-parity.test.ts`（`pnpm test:web` に含む）は帳票定義の TS と Rust の一致を確かめるため、Rust のハーネスを `cargo build` で作ります（cargo が必要。作り済みなら `POM_HARNESS` にパスを渡す）。
+- E2Eテストは、Windows では実際のアプリ（`pnpm build:e2e` で作る E2E 用の実行ファイル）を WebView2 の DevTools 接続で操作します。WebView2 のない環境（Linux など）では、同じ画面とアプリ本体を中継（`pom-bridge`）で動かし、Chromium で操作します（`POM_E2E_TARGET=bridge|webview2` で切り替え）。
+- Windows の E2E 用の実行ファイルは、ウィンドウを画面の外に置き、フォーカスを取りません（開発起動を確かめる `tests/e2e/dev.spec.ts` は E2E 用の実行ファイルを使わないため対象外）。テストの様子を画面で見るときは、環境変数 `POM_E2E_SHOW=1` を設定して実行します。
+
+</details>
+
 **ビルド・配布**
 
 | コマンド | 内容 |
@@ -255,9 +269,6 @@ try {
 | `pnpm notices` | 第三者ライセンス表記（THIRD-PARTY-NOTICES.txt）を作り直す（依存を更新したとき） |
 | `pnpm icons` | `assets/icon` の SVG からアイコンを作り直す |
 
-> [!WARNING]
-> E2E 用の実行ファイルにはテスト用の操作口（ダイアログの代役・障害の注入）が入っているため、配布しないでください（`pnpm build`・`pnpm make` の実行ファイルには入りません）。
-
 ### インストーラーの作成
 
 インストーラーの作成には [Inno Setup 6](https://jrsoftware.org/isinfo.php) が必要です。次のコマンドで導入できます（管理者権限は不要）。
@@ -268,17 +279,6 @@ winget install --id JRSoftware.InnoSetup -e --scope user
 
 - 標準以外の場所に入れた場合は、環境変数 `PARTS_ORDER_ISCC` に `ISCC.exe` の絶対パスを指定してください。
 - Inno Setup は無料で使えますが、営利目的で使う場合は有償ライセンスの購入が求められています（必須ではありません。条件は[公式サイト](https://jrsoftware.org/isorder.php)を参照）。
-
-<details>
-<summary><b>テストの補足（環境変数・E2E の仕組み）</b></summary>
-
-- テストは架空データだけを使います。E2Eテストの証跡の出力先は、環境変数 `POM_E2E_EVIDENCE` で指定できます。
-- `pnpm test:office`・`pnpm test:tauri` は、必要なアプリ・環境がないと該当の確認を飛ばします。環境変数 `POM_REQUIRE_OFFICE=1`（LibreOffice。Windows では Excel も）・`POM_REQUIRE_TAURI=1`（Linux・DISPLAY・ビルド済みアプリ・WebKitWebDriver）を付けると、飛ばさず失敗にします。
-- `tests/unit/sheet-parity.test.ts`（`pnpm test:web` に含む）は帳票定義の TS と Rust の一致を確かめるため、Rust のハーネスを `cargo build` で作ります（cargo が必要。作り済みなら `POM_HARNESS` にパスを渡す）。
-- E2Eテストは、Windows では実際のアプリ（`pnpm build:e2e` で作る E2E 用の実行ファイル）を WebView2 の DevTools 接続で操作します。WebView2 のない環境（Linux など）では、同じ画面とアプリ本体を中継（`pom-bridge`）で動かし、Chromium で操作します（`POM_E2E_TARGET=bridge|webview2` で切り替え）。
-- Windows の E2E 用の実行ファイルは、ウィンドウを画面の外に置き、フォーカスを取りません（開発起動を確かめる `tests/e2e/dev.spec.ts` は E2E 用の実行ファイルを使わないため対象外）。テストの様子を画面で見るときは、環境変数 `POM_E2E_SHOW=1` を設定して実行します。
-
-</details>
 
 ## インストール
 
@@ -343,7 +343,7 @@ tests/       unit（Vitest） / e2e（Playwright） / differential（旧実装�
 
 ### 移行後の仕様変更
 
-旧版から変えた点・足した機能です。各項目を開くと、チャネル・DB・バックアップへの影響と差分テストでの扱いを確認できます。
+旧版から変えた点・足した機能です。各項目を開くと、詳細（チャネル・DB・バックアップへの影響、差分テストでの扱いなど）を確認できます。
 
 <details>
 <summary><b>取込の判断とカテゴリの扱い</b></summary>
@@ -439,7 +439,6 @@ tests/       unit（Vitest） / e2e（Playwright） / differential（旧実装�
 
 - インストーラーは未署名のため、実行時にWindowsの警告（SmartScreen）が出ることがあります。Tauri 版のインストール・アンインストール・Electron 版からの更新は、実機での確認がまだです。
 - メインウィンドウを最小化している間は、画面（WebView2）のメモリ使用を抑えるよう WebView2 に指示します（Microsoft 推奨の MemoryUsageTargetLevel。自動保存・終了確認は止まりません）。メモリの一部がディスクへ退避されることがあり、元に戻した直後の操作がわずかに遅くなる場合があります。実機での削減量は未計測です。
-- 印刷（プリンターを選んで印刷）は、Windows 標準の印刷ダイアログでプリンター・部数・両面などを選び、WebView2 の印刷機能で印刷します。Electron 版の印刷ダイアログと見た目・選べる項目が少し異なります。
 
 ### 出力・印刷
 
@@ -447,6 +446,7 @@ tests/       unit（Vitest） / e2e（Playwright） / differential（旧実装�
 - 「材料伝票共に納品」の記号を決める前に保存した明細は、記号（⦿）を選び直すまで出力を止めます。
 - 実際のExcelでの表示・印刷との完全一致は未検証です。画面のプレビューは100%・96dpi相当の寸法で描くため、Windowsの表示倍率やフォントの違いで文字のはみ出し方がわずかに変わることがあります。
 - PDF保存・印刷は印刷範囲をA4縦1ページに収めるため約64%に縮小します。出力するExcelファイルも「1ページに収める」印刷設定にしています（見本の68%指定のままだと、Excelでは最終行付近が、LibreOfficeではG列も別ページに分かれるため）。印刷範囲は罫線のあるA〜G列（見本にある空欄のH列は含めません）で、PDF・印刷・Excelとも用紙の左右中央に置きます。セルに入りきらない文字はExcelと同じく途中で切れます。
+- 印刷（プリンターを選んで印刷）は、Windows 標準の印刷ダイアログでプリンター・部数・両面などを選び、WebView2 の印刷機能で印刷します。Electron 版の印刷ダイアログと見た目・選べる項目が少し異なります。
 - 帳票形式の変更前に出力したxlsxへの上書き保存はできません（帳票の既定の揃えを中央に変えた版より前に出力したファイルも同じ）。別の名前で出力してください。
 - exFAT・FAT32 の保存先（USBメモリなど）への新規保存は、実際の媒体での確認がまだです。保存中の電源断・取り外しに対する耐性は、保存先のファイルシステムによって異なり、NTFS と同じにはなりません。
 
