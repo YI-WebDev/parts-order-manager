@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/icon/icon-512.png" alt="" width="112" />
+<img src="assets/icon/icon-512.png" alt="アプリのアイコン" width="112" />
 
 # 発注書管理
 
@@ -142,8 +142,8 @@ flowchart LR
 ```
 
 1. **材料を取り込む** — 材料Excelを読み込み、内容を確認して材料台帳に登録します。
-2. **明細を作る** — 請求書一覧の「新規請求書」（Ctrl+N）で請求書を開き、材料検索（Ctrl+F）で材料を選んでまとめて明細に追加します。必要なら明細表で数量・備考を直します。
-3. **帳票を仕上げる** — プレビューのセルに帳票上部（上部欄・ヘッダー欄・納期）を入力し、必要に応じて明細のチェック（● ○ ⦿）やセルの書式を付けます。編集内容は自動保存されます。
+2. **明細を作る** — 請求書一覧の「新規請求書」（Ctrl+N）で請求書を開き、材料検索（Ctrl+F）で材料を選んでまとめて明細に追加します。必要に応じて、明細表で数量・備考を直したり、チェック（● ○ ⦿）を選んだりします。
+3. **帳票を仕上げる** — プレビューのセルに帳票上部（上部欄・ヘッダー欄・納期）を入力し、必要に応じてセルの書式を付けます。編集内容は自動保存されます。
 4. **出力する** — Excel出力、PDF保存、印刷から選びます。
 
 ## 動作環境
@@ -204,7 +204,7 @@ $pnpmDir = Join-Path $env:LOCALAPPDATA 'PartsOrderDev\pnpm-10.34.5'
 & "$nodeDir\node.exe" "$nodeDir\node_modules\npm\bin\npm-cli.js" install --prefix $pnpmDir --ignore-scripts --no-audit --no-fund pnpm@10.34.5
 ```
 
-3. 以降は次を貼り付けて実行します。`$task` を下の[コマンド](#コマンド)の表のコマンド名に変えると、他の操作も同じ方法で実行できます。PATHの変更はこの処理中だけで、終了時に元へ戻ります。
+3. 以降は次を貼り付けて実行します。`$task` を下の[コマンド](#コマンド)の表の `pnpm` に続く名前（例: `build`）に変えると、他の操作も同じ方法で実行できます。PATHの変更はこの処理中だけで、終了時に元へ戻ります。
 
 ```powershell
 $nodeDir = Join-Path $env:LOCALAPPDATA 'PartsOrderDev\node-v24.19.0-win-x64'
